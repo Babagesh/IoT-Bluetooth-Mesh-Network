@@ -10,8 +10,8 @@ export function getMqttClient() {
     port: Number(process.env.EXPO_PUBLIC_MQTT_PORT),
     protocol: process.env.EXPO_PUBLIC_MQTT_PROTOCOL,
     path: process.env.EXPO_PUBLIC_MQTT_PATH,
-    username: process.env.EXPO_PUBLIC_MQTT_USERNAME,
-    password: process.env.EXPO_PUBLIC_MQTT_PASSWORD,
+    username: process.env.EXPO_PUBLIC_USERNAME,
+    password: process.env.EXPO_PUBLIC_PASSWORD,
   };
 
   client = mqtt.connect(options);

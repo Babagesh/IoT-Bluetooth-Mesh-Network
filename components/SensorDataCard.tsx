@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 type SensorDataCardProps = {
   luxValue: string;
   temperatureValue: string;
+  humidityValue: string;
 };
 
 function ValuePill({ value }: { value: string }) {
@@ -13,7 +14,7 @@ function ValuePill({ value }: { value: string }) {
   );
 }
 
-export default function SensorDataCard({ luxValue, temperatureValue }: SensorDataCardProps) {
+export default function SensorDataCard({ luxValue, temperatureValue, humidityValue}: SensorDataCardProps) {
   return (
     <View style={styles.card}>
       <Text style={styles.heading}>Sensor Data</Text>
@@ -26,6 +27,10 @@ export default function SensorDataCard({ luxValue, temperatureValue }: SensorDat
       <View style={styles.row}>
         <Text style={styles.label}>Temp</Text>
         <ValuePill value={temperatureValue} />
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Humidity</Text>
+        <ValuePill value={humidityValue} />
       </View>
     </View>
   );

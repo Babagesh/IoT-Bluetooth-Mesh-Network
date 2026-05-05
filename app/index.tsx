@@ -7,21 +7,22 @@ import ProjectHeader from "../components/ProjectHeader";
 import SensorDataCard from "../components/SensorDataCard";
 import { getMqttClient } from '../mqqt_client';
 
-const subscribeTopics = ["sensors/lux", "sensors/temp"]
+const subscribeTopics = ["sensors/lux", "sensors/temperature", "sensors/humidity"]
 
 export default function Index() {
   const [isLightOn, setIsLightOn] = useState(false);
   const [luxIntervalSeconds, setLuxIntervalSeconds] = useState(3);
   const [luxValue, setLuxValue] = useState("--");
   const [tempValue, setTempValue] = useState("--");
+  const [humidityValue, setHumidityValue] = useState("--");
   const [temperatureIntervalSeconds, setTemperatureIntervalSeconds] = useState(5);
 
   useEffect(() => {
     const client = getMqttClient();
 
     const onConnect = () => {
-      console.log("Connected");
-      client.subscribe(subscribeTopics);
+      console.log("MQTT connected");
+      client.subscribe(subscribeTopics, { qos: 1 });
     };
 
     const onError = (error: Error) => {
@@ -35,8 +36,11 @@ export default function Index() {
       if (topic === "sensors/lux") {
         setLuxValue(value);
       }
-      if (topic === "sensors/temp") {
+      if (topic === "sensors/temperature") {
         setTempValue(value);
+      }
+      if (topic === "sensors/humidity") {
+        setHumidityValue(value);
       }
     };
 
@@ -53,7 +57,8 @@ export default function Index() {
       client.off("connect", onConnect);
       client.off("error", onError);
       client.off("message", onMessage);
-      client.unsubscribe(subscribeTopics);
+      // Do not unsubscribe: singleton client; dev Strict Mode unmount would drop
+      // topics and miss live messages.
     };
   }, []);
 
@@ -70,7 +75,7 @@ export default function Index() {
 
   const handleTempIntervalChange = (value: number) => {
     setTemperatureIntervalSeconds(value);
-    getMqttClient().publish("sensors/temp/interval", String(value))
+    getMqttClient().publish("sensors/temperature/interval", String(value))
   }
 
 
@@ -79,7 +84,7 @@ export default function Index() {
       <ScrollView contentContainerStyle={styles.content}>
         <ProjectHeader />
 
-        <SensorDataCard luxValue={luxValue} temperatureValue={tempValue} />
+        <SensorDataCard luxValue={luxValue} temperatureValue={tempValue} humidityValue={humidityValue} />
 
         <LightBulbToggle isOn={isLightOn} onToggle={handleToggleLight} />
 
